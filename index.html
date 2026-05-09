@@ -36,8 +36,9 @@
     </svg>
     <div class="lamp-stage">
       <iframe
+        id="lamp-video"
         class="lamp-video"
-        src="https://www.youtube-nocookie.com/embed/S1a2wUfAdFM?autoplay=1&mute=1&controls=0&loop=1&playlist=S1a2wUfAdFM&modestbranding=1&playsinline=1&rel=0&iv_load_policy=3&disablekb=1&vq=hd1080&hd=1"
+        src="https://www.youtube-nocookie.com/embed/S1a2wUfAdFM?autoplay=1&mute=1&controls=0&loop=1&playlist=S1a2wUfAdFM&modestbranding=1&playsinline=1&rel=0&iv_load_policy=3&disablekb=1&vq=hd1080&hd=1&enablejsapi=1"
         title="Lava lamp"
         frameborder="0"
         allow="autoplay; encrypted-media; picture-in-picture"
@@ -51,5 +52,43 @@
 
     <div class="tungsten-glow"></div>
 
+    <!--
+      Lift the curtain exactly when YouTube reports the video is playing
+      instead of waiting on a fixed timer. Two safety nets layered:
+        1. JS setTimeout(8000) — fires if the IFrame API itself fails to load
+        2. CSS animation in style.css — fires if JS is disabled entirely
+      Either fallback hands you a working page; the API path just makes the
+      reveal snappier on most loads.
+    -->
+    <script>
+      (() => {
+        const tag = document.createElement('script');
+        tag.src = 'https://www.youtube.com/iframe_api';
+        document.head.appendChild(tag);
+
+        let lifted = false;
+        const lift = () => {
+          if (lifted) return;
+          lifted = true;
+          const c = document.querySelector('.lamp-curtain');
+          if (c) c.classList.add('lift');
+        };
+
+        window.onYouTubeIframeAPIReady = () => {
+          new YT.Player('lamp-video', {
+            events: {
+              onReady: (e) => {
+                if (e.target.getPlayerState() === YT.PlayerState.PLAYING) lift();
+              },
+              onStateChange: (e) => {
+                if (e.data === YT.PlayerState.PLAYING) lift();
+              },
+            },
+          });
+        };
+
+        setTimeout(lift, 8000);
+      })();
+    </script>
   </body>
 </html>

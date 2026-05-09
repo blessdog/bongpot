@@ -43,9 +43,14 @@ body, html {
 
 /*
   Curtain covers the iframe while the YouTube player loads + buffers.
-  Hides the initial chrome (title, OS media controls) until they auto-hide.
   Color is the deep purple end of the split-tone LUT so the page looks
   like the lamp's dark background during load — not a black void.
+
+  Two paths can lift it:
+    1. JS adds .lift when YouTube reports the video is actually playing
+       (snappy — typically 1-3s on a fast connection).
+    2. CSS animation fires at 8s as a fallback if JS is disabled or the
+       IFrame API never loads (e.g. network blocking).
 */
 .lamp-curtain {
   position: absolute;
@@ -53,7 +58,13 @@ body, html {
   background: #1a0d47;
   z-index: 4;
   pointer-events: none;
-  animation: curtain-lift 1.6s ease-out 5s forwards;
+  opacity: 1;
+  transition: opacity 1.4s ease-out;
+  animation: curtain-lift 1.6s ease-out 8s forwards;
+}
+.lamp-curtain.lift {
+  opacity: 0;
+  animation: none;  /* JS path takes over from CSS fallback */
 }
 @keyframes curtain-lift {
   from { opacity: 1; }
