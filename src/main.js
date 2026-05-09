@@ -3,7 +3,7 @@ import './style.css';
 const lavaLamp = document.getElementById('lava-lamp');
 
 // Create the wax blobs
-const numOrbs = 18;
+const numOrbs = 6;
 
 function createOrb() {
   const orb = document.createElement('div');
