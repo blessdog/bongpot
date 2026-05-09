@@ -17,6 +17,19 @@ body, html {
 }
 
 /*
+  iOS Safari (and other touch-only WebKit) feeds the filter pipeline a
+  cross-origin iframe as if it were opaque white, which the splittone
+  LUT maps to bright yellow/orange. Disable the filter on touch devices
+  so the lamp shows in its native color rather than a yellow rectangle.
+  Desktop keeps the split-tone grade.
+*/
+@media (hover: none) and (pointer: coarse) {
+  .lamp-stage {
+    filter: none;
+  }
+}
+
+/*
   Cover behavior: the iframe is sized to the larger of (viewport-fitting)
   vs (16:9-aspect-correct) in each dimension. Result is always at least
   viewport-sized, always 16:9, centered. Overflow is cropped by the stage.
