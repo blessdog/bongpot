@@ -17,19 +17,17 @@ body, html {
 }
 
 /*
-  Cover behavior with extra vertical padding so YouTube's chrome (title bar
-  at top, branding at bottom) is *clipped* by the stage instead of visible.
-  The iframe is still 16:9 (so YouTube's player doesn't letterbox internally)
-  but oversized by --crop pixels — half hidden above the viewport, half below.
-  Crop-based, no transform:scale, so pixels stay sharp.
+  Cover behavior: the iframe is sized to the larger of (viewport-fitting)
+  vs (16:9-aspect-correct) in each dimension. Result is always at least
+  viewport-sized, always 16:9, centered. Overflow is cropped by the stage.
+  Works on any aspect ratio: portrait phone, square, ultrawide, etc.
 */
 .lamp-video {
-  --crop: 220px;
   position: absolute;
   top: 50%;
   left: 50%;
-  height: max(calc(100vh + var(--crop)), calc(100vw * 9 / 16));
-  width: calc(max(calc(100vh + var(--crop)), calc(100vw * 9 / 16)) * 16 / 9);
+  width: max(100vw, calc(100vh * 16 / 9));
+  height: max(100vh, calc(100vw * 9 / 16));
   transform: translate(-50%, -50%);
   border: 0;
   pointer-events: none;
