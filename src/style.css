@@ -1,19 +1,44 @@
-:root {
-  --font-family: 'Outfit', sans-serif;
-}
-
 body, html {
   margin: 0;
   padding: 0;
   width: 100%;
   height: 100%;
-  background-color: #050505; /* Deep dark background */
+  /* Clear/Yellow fluid with deep warm ambiance */
+  background: radial-gradient(circle at center, #2e1200 0%, #050200 100%);
   overflow: hidden;
-  font-family: var(--font-family);
-  color: white;
+  background-color: #050200;
 }
 
-/* The gooey container */
+/* 1970s film grain overlay */
+.film-grain {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 100;
+  opacity: 0.35;
+  mix-blend-mode: overlay;
+  /* SVG Noise */
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+}
+
+/* Warm tungsten bulb illuminating from below */
+.tungsten-glow {
+  position: absolute;
+  bottom: -20vh;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 120vw;
+  height: 60vh;
+  background: radial-gradient(ellipse at bottom, rgba(255, 140, 0, 0.4) 0%, rgba(200, 50, 0, 0.1) 50%, transparent 100%);
+  filter: blur(50px);
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Viscous gooey container */
 .lava-lamp {
   position: absolute;
   top: 0;
@@ -21,89 +46,21 @@ body, html {
   width: 100%;
   height: 100%;
   filter: url(#gooey);
-  background-color: transparent;
   z-index: 1;
 }
 
-/* Base style for all orbs */
+/* 
+  Subsurface scattering & translucent wax:
+  We use radial gradients to make the center look hot/dense 
+  and the edges darker and more translucent.
+*/
 .orb {
   position: absolute;
   border-radius: 50%;
-  /* We use mix-blend-mode to make overlapping colors psychedelic */
+  /* Deep crimson / magenta wax */
+  background: radial-gradient(circle at 30% 30%, #ff4b1f, #ff003c 60%, #800020 100%);
+  /* Soft outer glow mimicking backlit subsurface scattering */
+  box-shadow: 0 0 40px rgba(255, 0, 60, 0.4), inset -20px -20px 60px rgba(128, 0, 32, 0.8), inset 20px 20px 60px rgba(255, 100, 50, 0.6);
   mix-blend-mode: screen;
-  /* A subtle transition for dynamic color changes */
-  transition: background 2s ease;
-  animation-iteration-count: infinite;
-  animation-direction: alternate;
-}
-
-/* 
-  The trippy colors keyframe:
-  Orbs start with classic lava lamp colors (like lime, cyan, orange) 
-  and animate their hue for the psychedelic effect.
-*/
-@keyframes trippy-colors {
-  0% { filter: hue-rotate(0deg); }
-  50% { filter: hue-rotate(180deg); }
-  100% { filter: hue-rotate(360deg); }
-}
-
-@keyframes float-1 {
-  0% { transform: translate(0, 0) scale(1); }
-  50% { transform: translate(20vw, -30vh) scale(1.5); }
-  100% { transform: translate(-20vw, 40vh) scale(0.8); }
-}
-
-@keyframes float-2 {
-  0% { transform: translate(0, 0) scale(1.2); }
-  33% { transform: translate(-30vw, -40vh) scale(0.9); }
-  66% { transform: translate(30vw, 20vh) scale(1.6); }
-  100% { transform: translate(-10vw, -20vh) scale(1.1); }
-}
-
-@keyframes float-3 {
-  0% { transform: translate(0, 0) scale(0.8); }
-  50% { transform: translate(-40vw, 50vh) scale(1.3); }
-  100% { transform: translate(40vw, -30vh) scale(1.5); }
-}
-
-/* Title overlay that stays above the lava lamp */
-.overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  z-index: 10;
-  pointer-events: none;
-  text-align: center;
-  text-shadow: 0 4px 20px rgba(0,0,0,0.8);
-}
-
-.overlay h1 {
-  font-size: 5rem;
-  font-weight: 900;
-  letter-spacing: -0.05em;
-  margin: 0;
-  background: linear-gradient(90deg, #fff, #bbb);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  animation: pulse-glow 4s infinite alternate;
-}
-
-.overlay p {
-  font-size: 1.5rem;
-  font-weight: 300;
-  letter-spacing: 0.2em;
-  opacity: 0.7;
-  margin-top: 10px;
-}
-
-@keyframes pulse-glow {
-  0% { text-shadow: 0 0 10px rgba(255,255,255,0.1); }
-  100% { text-shadow: 0 0 30px rgba(255,255,255,0.4); }
+  will-change: transform;
 }
