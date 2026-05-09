@@ -3,31 +3,74 @@ body, html {
   padding: 0;
   width: 100%;
   height: 100%;
-  /* Clear/Yellow fluid with deep warm ambiance */
-  background: radial-gradient(circle at center, #2e1200 0%, #050200 100%);
-  background-color: #050200;
+  background: #000;
   overflow: hidden;
 }
 
-canvas {
-  display: block;
-  width: 100vw;
-  height: 100vh;
-  position: absolute;
-  top: 0;
-  left: 0;
+.lamp-stage {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  background: #000;
   z-index: 1;
+  filter: url(#splittone);
 }
 
-/* Warm tungsten bulb illuminating from below */
-.tungsten-glow {
+/*
+  Cover behavior: the iframe is sized to the larger of (viewport-fitting)
+  vs (16:9-aspect-correct) in each dimension. Result is always at least
+  viewport-sized, always 16:9, centered. Overflow is cropped by the stage.
+  Works on any aspect ratio: portrait phone, square, ultrawide, etc.
+*/
+.lamp-video {
   position: absolute;
+  top: 50%;
+  left: 50%;
+  width: max(100vw, calc(100vh * 16 / 9));
+  height: max(100vh, calc(100vw * 9 / 16));
+  transform: translate(-50%, -50%);
+  border: 0;
+  pointer-events: none;
+}
+
+.lamp-shield {
+  position: absolute;
+  inset: 0;
+  pointer-events: auto;
+  background: transparent;
+  z-index: 2;
+}
+
+/*
+  Black curtain covering the iframe for ~3s, then fades out. Hides the
+  brief OS / browser media-session overlay (play/pause icons) that pops
+  up when autoplay begins.
+*/
+.lamp-curtain {
+  position: absolute;
+  inset: 0;
+  background: #000;
+  z-index: 4;
+  pointer-events: none;
+  animation: curtain-lift 1.6s ease-out 5s forwards;
+}
+@keyframes curtain-lift {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}
+
+/* Warm ambient glow bleeding past the lamp's own light. Subtle. */
+.tungsten-glow {
+  position: fixed;
   bottom: -20vh;
   left: 50%;
   transform: translateX(-50%);
   width: 120vw;
   height: 60vh;
-  background: radial-gradient(ellipse at bottom, rgba(255, 140, 0, 0.4) 0%, rgba(200, 50, 0, 0.1) 50%, transparent 100%);
-  z-index: 0;
+  background: radial-gradient(ellipse at bottom,
+    rgba(255, 140, 0, 0.18) 0%,
+    rgba(200, 50, 0, 0.06) 50%,
+    transparent 100%);
+  z-index: 3;
   pointer-events: none;
 }
