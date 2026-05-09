@@ -73,11 +73,15 @@
       ></iframe>
       <!-- Shield blocks pointer events so visitors can't pause/open the YouTube UI. -->
       <div class="lamp-shield"></div>
-      <!-- Curtain hides the YT/OS media-session overlay during the first few seconds of autoplay. -->
+      <!--
+        Curtain hides the YT/OS media-session overlay during the first
+        seconds of autoplay. Default quote shown if JS is disabled; the
+        script below replaces it with a random pick on page load.
+      -->
       <div class="lamp-curtain">
         <div class="lamp-greeting">
-          <p class="lamp-greeting-primary">bongpot loves you</p>
-          <p class="lamp-greeting-secondary">welcome, friend</p>
+          <p class="lamp-greeting-primary">&ldquo;What matters most is how well you walk through the fire.&rdquo;</p>
+          <p class="lamp-greeting-secondary">— Charles Bukowski</p>
         </div>
       </div>
     </div>
@@ -94,6 +98,44 @@
     -->
     <script>
       (() => {
+        // Curated quote pool. Edit/add freely — items are [quote, author].
+        // Aim for thought-provoking and weighty, not motivational filler.
+        const QUOTES = [
+          ["What matters most is how well you walk through the fire.", "Charles Bukowski"],
+          ["Find what you love and let it kill you.", "Charles Bukowski"],
+          ["There's nothing to mourn about death any more than there is to mourn about the growing of a flower.", "Charles Bukowski"],
+          ["We are here to laugh at the odds and live our lives so well that Death will tremble to take us.", "Charles Bukowski"],
+          ["Civilization is like a thin layer of ice upon a deep ocean of chaos and darkness.", "Werner Herzog"],
+          ["The poet must not avert his eyes.", "Werner Herzog"],
+          ["The common denominator of the universe is not harmony, but chaos, hostility and murder.", "Werner Herzog"],
+          ["I see it as a duty: I have to articulate the inarticulate.", "Werner Herzog"],
+          ["Between the wish and the thing the world lies waiting.", "Cormac McCarthy"],
+          ["You forget what you want to remember, and you remember what you want to forget.", "Cormac McCarthy"],
+          ["Anything that doesn't take years of your life and drive you to suicide hardly seems worth doing.", "Cormac McCarthy"],
+          ["Until you make the unconscious conscious, it will direct your life and you will call it fate.", "Carl Jung"],
+          ["Knowing your own darkness is the best method for dealing with the darknesses of other people.", "Carl Jung"],
+          ["The privilege of a lifetime is to become who you truly are.", "Carl Jung"],
+          ["The cave you fear to enter holds the treasure you seek.", "Joseph Campbell"],
+          ["We must let go of the life we have planned, so as to accept the one that is waiting for us.", "Joseph Campbell"],
+          ["You are an aperture through which the universe is looking at and exploring itself.", "Alan Watts"],
+          ["Muddy water is best cleared by leaving it alone.", "Alan Watts"],
+          ["Trying to define yourself is like trying to bite your own teeth.", "Alan Watts"],
+          ["He who has a why to live for can bear almost any how.", "Friedrich Nietzsche"],
+          ["When you stare into the abyss, the abyss stares back into you.", "Friedrich Nietzsche"],
+          ["And those who were seen dancing were thought to be insane by those who could not hear the music.", "Friedrich Nietzsche"],
+          ["In the depth of winter, I finally learned that there was in me an invincible summer.", "Albert Camus"],
+          ["Buy the ticket, take the ride.", "Hunter S. Thompson"],
+          ["Be patient toward all that is unsolved in your heart and try to love the questions themselves.", "Rainer Maria Rilke"],
+          ["Don't bend; don't water it down; don't try to make it logical; don't edit your own soul according to the fashion.", "Franz Kafka"],
+          ["Death steals everything except our stories.", "Jim Harrison"],
+        ];
+        const [quoteText, author] = QUOTES[Math.floor(Math.random() * QUOTES.length)];
+        const primary = document.querySelector('.lamp-greeting-primary');
+        const secondary = document.querySelector('.lamp-greeting-secondary');
+        if (primary) primary.textContent = '“' + quoteText + '”';
+        if (secondary) secondary.textContent = '— ' + author;
+
+        // YT IFrame API: lift on PLAYING, force play for Safari.
         const tag = document.createElement('script');
         tag.src = 'https://www.youtube.com/iframe_api';
         document.head.appendChild(tag);
@@ -122,8 +164,10 @@
           });
         };
 
-        // Safety net: lift anyway after 6s if the API never fires PLAYING.
-        setTimeout(lift, 6000);
+        // Safety net: if API never fires PLAYING (broken JS, network blocking,
+        // Safari refusing autoplay), still trigger the lift so the page can
+        // reach the lamp. The CSS animation also has a fallback delay.
+        setTimeout(lift, 4000);
       })();
     </script>
   </body>

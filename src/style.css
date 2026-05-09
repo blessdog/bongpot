@@ -65,55 +65,73 @@ body, html {
   display: flex;
   align-items: center;
   justify-content: center;
-  animation: curtain-fade 3.5s linear 6s forwards;
+  /*
+    JS-disabled fallback: 4s pre-delay (so a quote is readable on load)
+    + 6.5s animation = 10.5s total before reveal. CSS-only path.
+  */
+  animation: curtain-fade 6.5s linear 4s forwards;
 }
 .lamp-curtain.lift {
-  animation: curtain-fade 3s linear forwards;
+  /*
+    JS path triggered by the IFrame API on PLAYING. 5s solid hold so the
+    quote can actually be read AND the OS media-session overlay is fully
+    auto-hidden before any opacity drops. Then 1.5s linear fade.
+  */
+  animation: curtain-fade 6.5s linear forwards;
 }
 @keyframes curtain-fade {
-  0%, 50% { opacity: 1; }   /* solid 1.5s hold so OS media-session overlay
-                                stays fully masked while it auto-hides  */
-  100%    { opacity: 0; }   /* then 1.5s linear reveal of the live video */
+  0%, 77% { opacity: 1; }   /* 5s of 6.5s held opaque */
+  100%    { opacity: 0; }
 }
 
 .lamp-greeting {
-  color: rgba(255, 180, 110, 0.85);
+  color: rgba(255, 180, 110, 0.88);
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
   text-align: center;
-  animation: greeting-pulse 2.6s ease-in-out infinite;
+  max-width: min(44rem, 88vw);
+  padding: 0 1.5rem;
+  animation: greeting-breathe 5s ease-in-out infinite;
 }
 .lamp-greeting p {
   margin: 0;
 }
 .lamp-greeting-primary {
-  font-size: clamp(1.4rem, 3.5vw, 2.6rem);
-  font-weight: 200;
-  letter-spacing: 0.2em;
+  font-size: clamp(1.05rem, 2.3vw, 1.7rem);
+  font-weight: 250;
+  font-style: italic;
+  line-height: 1.5;
+  letter-spacing: 0.02em;
 }
 .lamp-greeting-secondary {
-  font-size: clamp(0.85rem, 1.8vw, 1.25rem);
+  font-size: clamp(0.7rem, 1.2vw, 0.95rem);
   font-weight: 300;
-  letter-spacing: 0.18em;
-  opacity: 0.65;
-  margin-top: 0.7em;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  opacity: 0.55;
+  margin-top: 1.4em;
 }
-@keyframes greeting-pulse {
-  0%, 100% { opacity: 0.6; }
+@keyframes greeting-breathe {
+  0%, 100% { opacity: 0.75; }
   50%      { opacity: 1; }
 }
 
-/* Warm ambient glow bleeding past the lamp's own light. Subtle. */
+/*
+  Warm ambient glow bleeding from the bottom. Linear bottom→transparent
+  gradient instead of a radial because radial gradients terminate at a
+  ring of constant alpha — that ring read as a perceptible horizontal
+  seam mid-viewport. Linear gradient has continuous alpha falloff with
+  no discrete edge.
+*/
 .tungsten-glow {
   position: fixed;
-  bottom: -20vh;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 120vw;
-  height: 60vh;
-  background: radial-gradient(ellipse at bottom,
-    rgba(255, 140, 0, 0.18) 0%,
-    rgba(200, 50, 0, 0.06) 50%,
-    transparent 100%);
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(255, 140, 0, 0.22) 0%,
+    rgba(200, 60, 0, 0.12) 30%,
+    rgba(140, 30, 0, 0.04) 65%,
+    transparent 100%
+  );
   z-index: 3;
   pointer-events: none;
 }
