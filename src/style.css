@@ -1,0 +1,109 @@
+:root {
+  --font-family: 'Outfit', sans-serif;
+}
+
+body, html {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #050505; /* Deep dark background */
+  overflow: hidden;
+  font-family: var(--font-family);
+  color: white;
+}
+
+/* The gooey container */
+.lava-lamp {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  filter: url(#gooey);
+  background-color: transparent;
+  z-index: 1;
+}
+
+/* Base style for all orbs */
+.orb {
+  position: absolute;
+  border-radius: 50%;
+  /* We use mix-blend-mode to make overlapping colors psychedelic */
+  mix-blend-mode: screen;
+  /* A subtle transition for dynamic color changes */
+  transition: background 2s ease;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+}
+
+/* 
+  The trippy colors keyframe:
+  Orbs start with classic lava lamp colors (like lime, cyan, orange) 
+  and animate their hue for the psychedelic effect.
+*/
+@keyframes trippy-colors {
+  0% { filter: hue-rotate(0deg); }
+  50% { filter: hue-rotate(180deg); }
+  100% { filter: hue-rotate(360deg); }
+}
+
+@keyframes float-1 {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(20vw, -30vh) scale(1.5); }
+  100% { transform: translate(-20vw, 40vh) scale(0.8); }
+}
+
+@keyframes float-2 {
+  0% { transform: translate(0, 0) scale(1.2); }
+  33% { transform: translate(-30vw, -40vh) scale(0.9); }
+  66% { transform: translate(30vw, 20vh) scale(1.6); }
+  100% { transform: translate(-10vw, -20vh) scale(1.1); }
+}
+
+@keyframes float-3 {
+  0% { transform: translate(0, 0) scale(0.8); }
+  50% { transform: translate(-40vw, 50vh) scale(1.3); }
+  100% { transform: translate(40vw, -30vh) scale(1.5); }
+}
+
+/* Title overlay that stays above the lava lamp */
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+  pointer-events: none;
+  text-align: center;
+  text-shadow: 0 4px 20px rgba(0,0,0,0.8);
+}
+
+.overlay h1 {
+  font-size: 5rem;
+  font-weight: 900;
+  letter-spacing: -0.05em;
+  margin: 0;
+  background: linear-gradient(90deg, #fff, #bbb);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: pulse-glow 4s infinite alternate;
+}
+
+.overlay p {
+  font-size: 1.5rem;
+  font-weight: 300;
+  letter-spacing: 0.2em;
+  opacity: 0.7;
+  margin-top: 10px;
+}
+
+@keyframes pulse-glow {
+  0% { text-shadow: 0 0 10px rgba(255,255,255,0.1); }
+  100% { text-shadow: 0 0 30px rgba(255,255,255,0.4); }
+}

@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>bongpot.com - Psychedelic Lava Lamp</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;600;900&display=swap" rel="stylesheet">
+  </head>
+  <body>
+    <!-- The Lava Lamp Container -->
+    <div class="lava-lamp" id="lava-lamp">
+      <!-- Orbs will be dynamically injected here by main.js -->
+    </div>
+    
+    <!-- Title overlay -->
+    <div class="overlay">
+      <h1>bongpot.com</h1>
+      <p>stay trippy.</p>
+    </div>
+
+    <!-- SVG Gooey Filter -->
+    <svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="0" height="0">
+      <defs>
+        <filter id="gooey">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="30" result="blur" />
+          <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 60 -25" result="gooey" />
+          <!-- We just use the gooey result to get smooth merged colors -->
+          <feComposite in="SourceGraphic" in2="gooey" operator="atop"/>
+        </filter>
+      </defs>
+    </svg>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
