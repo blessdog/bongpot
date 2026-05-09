@@ -6,7 +6,13 @@
     <title>bongpot.com — I love lamp</title>
     <meta name="description" content="A psychedelic lava lamp for your screen. Press play and chill." />
 
-    <!-- Favicons — color-graded frame extracted from the lamp video. -->
+    <!--
+      Favicons — color-graded from the lamp video. Animated GIF first so
+      Firefox shows the looping blob; static PNGs after for browsers that
+      don't support animated favicons (Chrome dropped support in 2022,
+      Safari never had it). PNG fallbacks render the first frame.
+    -->
+    <link rel="icon" type="image/gif" sizes="any" href="/favicon.gif" />
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
     <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96.png" />
     <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png" />
