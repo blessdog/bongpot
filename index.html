@@ -68,7 +68,7 @@
         src="https://www.youtube-nocookie.com/embed/lPInO0xV8x4?autoplay=1&mute=1&controls=0&loop=1&playlist=lPInO0xV8x4&modestbranding=1&playsinline=1&rel=0&iv_load_policy=3&disablekb=1&vq=hd1080&hd=1&enablejsapi=1"
         title="Lava lamp"
         frameborder="0"
-        allow="autoplay; encrypted-media; picture-in-picture"
+        allow="autoplay; encrypted-media"
         loading="eager"
       ></iframe>
       <!-- Shield blocks pointer events so visitors can't pause/open the YouTube UI. -->
@@ -114,10 +114,10 @@
           new YT.Player('lamp-video', {
             events: {
               onReady: (e) => {
-                if (e.target.getPlayerState() === YT.PlayerState.PLAYING) scheduleLift(2500);
+                if (e.target.getPlayerState() === YT.PlayerState.PLAYING) scheduleLift(4000);
               },
               onStateChange: (e) => {
-                if (e.data === YT.PlayerState.PLAYING) scheduleLift(2500);
+                if (e.data === YT.PlayerState.PLAYING) scheduleLift(4000);
               },
             },
           });
