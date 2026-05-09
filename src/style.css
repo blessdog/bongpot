@@ -42,14 +42,19 @@ body, html {
 }
 
 /*
-  Black curtain covering the iframe for ~3s, then fades out. Hides the
-  brief OS / browser media-session overlay (play/pause icons) that pops
-  up when autoplay begins.
+  Curtain shows the YouTube thumbnail (color-graded by the same filter)
+  while the iframe + video buffer warm up. Hides initial chrome and
+  removes the "blank black" loading window. Fades out into the live
+  video; the transition is invisible because both share the same crop
+  position and color grade.
 */
 .lamp-curtain {
   position: absolute;
   inset: 0;
-  background: #000;
+  background:
+    #000
+    url('https://i.ytimg.com/vi/S1a2wUfAdFM/maxresdefault.jpg')
+    center / cover no-repeat;
   z-index: 4;
   pointer-events: none;
   animation: curtain-lift 1.6s ease-out 5s forwards;
