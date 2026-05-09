@@ -110,6 +110,9 @@
           new YT.Player('lamp-video', {
             events: {
               onReady: (e) => {
+                // Safari often blocks the autoplay= URL hint but allows
+                // programmatic play after explicit mute. Try it.
+                try { e.target.mute(); e.target.playVideo(); } catch (_) {}
                 if (e.target.getPlayerState() === YT.PlayerState.PLAYING) lift();
               },
               onStateChange: (e) => {
