@@ -3,25 +3,19 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <title>I love lamp</title>
+    <title>bongpot.com — I love lamp</title>
     <link rel="stylesheet" href="/src/style.css" />
 
     <!--
-      Load-time optimizations.
-      preconnect: warm TLS to YouTube hosts before iframe mounts.
-      preload: fetch the still thumbnail at high priority so the page has
-      visible content during the curtain (instead of black) and the
-      transition into the live video is seamless.
-      NOTE: when you change the video ID, update it in THREE places:
-        1. the iframe src below (twice — embed/ID and playlist=ID)
-        2. the preload href below
-        3. the .lamp-curtain background-image in style.css
+      Load-time optimization. Warms TLS to YouTube hosts before the iframe
+      mounts so the player + first video chunks arrive faster.
+      NOTE: when you change the video ID, update it in TWO places below:
+        1. the iframe src (twice — embed/ID and playlist=ID)
     -->
     <link rel="preconnect" href="https://www.youtube-nocookie.com" crossorigin />
     <link rel="preconnect" href="https://www.youtube.com" crossorigin />
-    <link rel="preconnect" href="https://i.ytimg.com" crossorigin />
+    <link rel="dns-prefetch" href="https://i.ytimg.com" />
     <link rel="dns-prefetch" href="https://yt3.ggpht.com" />
-    <link rel="preload" as="image" href="https://i.ytimg.com/vi/S1a2wUfAdFM/maxresdefault.jpg" />
   </head>
   <body>
     <!--

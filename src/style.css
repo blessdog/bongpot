@@ -42,19 +42,15 @@ body, html {
 }
 
 /*
-  Curtain shows the YouTube thumbnail (color-graded by the same filter)
-  while the iframe + video buffer warm up. Hides initial chrome and
-  removes the "blank black" loading window. Fades out into the live
-  video; the transition is invisible because both share the same crop
-  position and color grade.
+  Curtain covers the iframe while the YouTube player loads + buffers.
+  Hides the initial chrome (title, OS media controls) until they auto-hide.
+  Color is the deep purple end of the split-tone LUT so the page looks
+  like the lamp's dark background during load — not a black void.
 */
 .lamp-curtain {
   position: absolute;
   inset: 0;
-  background:
-    #000
-    url('https://i.ytimg.com/vi/S1a2wUfAdFM/maxresdefault.jpg')
-    center / cover no-repeat;
+  background: #1a0d47;
   z-index: 4;
   pointer-events: none;
   animation: curtain-lift 1.6s ease-out 5s forwards;
