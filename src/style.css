@@ -17,15 +17,21 @@ body, html {
 }
 
 /*
-  iOS Safari (and other touch-only WebKit) feeds the filter pipeline a
-  cross-origin iframe as if it were opaque white, which the splittone
-  LUT maps to bright yellow/orange. Disable the filter on touch devices
-  so the lamp shows in its native color rather than a yellow rectangle.
-  Desktop keeps the split-tone grade.
+  Touch-device path: skip the YouTube iframe entirely and show the
+  fallback <video> with the lavender/orange grade baked in. Avoids
+  iOS Safari's stack of issues (autoplay block, media-session overlay,
+  cross-origin filter producing a yellow rectangle). Filter is disabled
+  too — the fallback already has the grade encoded.
 */
 @media (hover: none) and (pointer: coarse) {
   .lamp-stage {
     filter: none;
+  }
+  .lamp-video {
+    display: none;
+  }
+  .lamp-fallback {
+    display: block;
   }
 }
 
@@ -35,7 +41,8 @@ body, html {
   viewport-sized, always 16:9, centered. Overflow is cropped by the stage.
   Works on any aspect ratio: portrait phone, square, ultrawide, etc.
 */
-.lamp-video {
+.lamp-video,
+.lamp-fallback {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -44,6 +51,12 @@ body, html {
   transform: translate(-50%, -50%);
   border: 0;
   pointer-events: none;
+  object-fit: cover;
+}
+
+/* Default: desktop uses the YouTube iframe. Hide the fallback video. */
+.lamp-fallback {
+  display: none;
 }
 
 .lamp-shield {

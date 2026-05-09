@@ -71,6 +71,27 @@
         allow="autoplay; encrypted-media"
         loading="eager"
       ></iframe>
+
+      <!--
+        Mobile fallback. The YouTube iframe path on iOS Safari has a stack
+        of fragile issues (autoplay block, OS media-session overlay flash,
+        cross-origin filter producing a yellow screen). For a touch device
+        we skip the iframe entirely and play the same color-graded
+        boomerang clip we use for the link-share preview, as a native
+        <video>. Reliable autoplay, baked-in lavender/orange grade, no
+        YouTube chrome to hide, no third-party iframe quirks.
+      -->
+      <video
+        id="lamp-fallback"
+        class="lamp-fallback"
+        src="/preview.mp4"
+        autoplay
+        muted
+        loop
+        playsinline
+        preload="auto"
+        aria-hidden="true"
+      ></video>
       <!-- Shield blocks pointer events so visitors can't pause/open the YouTube UI. -->
       <div class="lamp-shield"></div>
       <!--
@@ -164,9 +185,16 @@
           });
         };
 
-        // Safety net: if API never fires PLAYING (broken JS, network blocking,
-        // Safari refusing autoplay), still trigger the lift so the page can
-        // reach the lamp. The CSS animation also has a fallback delay.
+        // On touch devices the fallback <video> plays instead of the iframe.
+        // Lift the curtain when the fallback signals it's playing.
+        const fallback = document.getElementById('lamp-fallback');
+        if (fallback) {
+          fallback.addEventListener('playing', lift, { once: true });
+          fallback.addEventListener('canplay', lift, { once: true });
+        }
+
+        // Safety net: if neither path fires (broken JS, network blocking,
+        // Safari refusing autoplay), still trigger the lift.
         setTimeout(lift, 4000);
       })();
     </script>
