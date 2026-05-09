@@ -27,11 +27,18 @@ body, html {
   .lamp-stage {
     filter: none;
   }
+  /*
+    !important: Vite's CSS minifier reorders rules and the bare
+    .lamp-fallback { display: none } default rule was ending up *after*
+    this @media block in the bundled output. Same specificity, later
+    wins, so the fallback was hidden even on iOS. !important forces the
+    override regardless of source order.
+  */
   .lamp-video {
-    display: none;
+    display: none !important;
   }
   .lamp-fallback {
-    display: block;
+    display: block !important;
   }
 }
 
