@@ -6,13 +6,11 @@
     <title>bongpot.com - Psychedelic Lava Lamp</title>
   </head>
   <body>
-    <!-- Tungsten bulb glow from the bottom -->
-    <div class="tungsten-glow"></div>
+    <!-- 100% Canvas based rendering to completely avoid Chrome DOM/GPU crashes -->
+    <canvas id="lava-lamp"></canvas>
 
-    <!-- The Lava Lamp Container -->
-    <div class="lava-lamp" id="lava-lamp">
-      <!-- Orbs will be dynamically injected here by main.js -->
-    </div>
+    <!-- Warm tungsten bulb illuminating from below (safe DOM element) -->
+    <div class="tungsten-glow"></div>
 
     <script type="module" src="/src/main.js"></script>
   </body>
