@@ -94,27 +94,36 @@
         document.head.appendChild(tag);
 
         let lifted = false;
+        let scheduled = false;
         const lift = () => {
           if (lifted) return;
           lifted = true;
           const c = document.querySelector('.lamp-curtain');
           if (c) c.classList.add('lift');
         };
+        // Hold the curtain ~2.5s after PLAYING fires so the macOS / browser
+        // media-session overlay (skip / pause / skip) has time to auto-hide
+        // before we expose the iframe.
+        const scheduleLift = (delay) => {
+          if (lifted || scheduled) return;
+          scheduled = true;
+          setTimeout(lift, delay);
+        };
 
         window.onYouTubeIframeAPIReady = () => {
           new YT.Player('lamp-video', {
             events: {
               onReady: (e) => {
-                if (e.target.getPlayerState() === YT.PlayerState.PLAYING) lift();
+                if (e.target.getPlayerState() === YT.PlayerState.PLAYING) scheduleLift(2500);
               },
               onStateChange: (e) => {
-                if (e.data === YT.PlayerState.PLAYING) lift();
+                if (e.data === YT.PlayerState.PLAYING) scheduleLift(2500);
               },
             },
           });
         };
 
-        setTimeout(lift, 8000);
+        setTimeout(lift, 9000);
       })();
     </script>
   </body>
