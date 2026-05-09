@@ -45,12 +45,15 @@ body, html {
   Curtain covers the iframe while the YouTube player loads + buffers.
   Color is the deep purple end of the split-tone LUT so the page looks
   like the lamp's dark background during load — not a black void.
+  A "we love you" greeting fades in/out with the curtain so the load
+  state has presence rather than feeling dead.
 
   Two paths can lift it:
-    1. JS adds .lift when YouTube reports the video is actually playing
-       (snappy — typically 1-3s on a fast connection).
-    2. CSS animation fires at 8s as a fallback if JS is disabled or the
-       IFrame API never loads (e.g. network blocking).
+    1. JS adds .lift the moment YouTube reports PLAYING. The fade is
+       gradual (~3s with a brief opaque hold so the OS media-session
+       overlay still gets covered during its auto-hide window).
+    2. CSS animation fires at 6s as a fallback if JS is disabled or the
+       IFrame API never loads.
 */
 .lamp-curtain {
   position: absolute;
@@ -59,16 +62,32 @@ body, html {
   z-index: 4;
   pointer-events: none;
   opacity: 1;
-  transition: opacity 1.4s ease-out;
-  animation: curtain-lift 1.6s ease-out 8s forwards;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: curtain-fade 3.5s linear 6s forwards;
 }
 .lamp-curtain.lift {
-  opacity: 0;
-  animation: none;  /* JS path takes over from CSS fallback */
+  animation: curtain-fade 3s linear forwards;
 }
-@keyframes curtain-lift {
-  from { opacity: 1; }
-  to   { opacity: 0; }
+@keyframes curtain-fade {
+  0%, 20% { opacity: 1; }   /* brief hold so OS overlay stays masked  */
+  100%    { opacity: 0; }   /* then linear reveal of the live video   */
+}
+
+.lamp-greeting {
+  margin: 0;
+  color: rgba(255, 180, 110, 0.85);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  font-size: clamp(1.4rem, 3.5vw, 2.6rem);
+  font-weight: 200;
+  letter-spacing: 0.2em;
+  text-align: center;
+  animation: greeting-pulse 2.6s ease-in-out infinite;
+}
+@keyframes greeting-pulse {
+  0%, 100% { opacity: 0.6; }
+  50%      { opacity: 1; }
 }
 
 /* Warm ambient glow bleeding past the lamp's own light. Subtle. */

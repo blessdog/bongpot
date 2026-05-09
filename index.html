@@ -74,7 +74,9 @@
       <!-- Shield blocks pointer events so visitors can't pause/open the YouTube UI. -->
       <div class="lamp-shield"></div>
       <!-- Curtain hides the YT/OS media-session overlay during the first few seconds of autoplay. -->
-      <div class="lamp-curtain"></div>
+      <div class="lamp-curtain">
+        <p class="lamp-greeting">we love you</p>
+      </div>
     </div>
 
     <div class="tungsten-glow"></div>
@@ -94,36 +96,28 @@
         document.head.appendChild(tag);
 
         let lifted = false;
-        let scheduled = false;
         const lift = () => {
           if (lifted) return;
           lifted = true;
           const c = document.querySelector('.lamp-curtain');
           if (c) c.classList.add('lift');
         };
-        // Hold the curtain ~2.5s after PLAYING fires so the macOS / browser
-        // media-session overlay (skip / pause / skip) has time to auto-hide
-        // before we expose the iframe.
-        const scheduleLift = (delay) => {
-          if (lifted || scheduled) return;
-          scheduled = true;
-          setTimeout(lift, delay);
-        };
 
         window.onYouTubeIframeAPIReady = () => {
           new YT.Player('lamp-video', {
             events: {
               onReady: (e) => {
-                if (e.target.getPlayerState() === YT.PlayerState.PLAYING) scheduleLift(4000);
+                if (e.target.getPlayerState() === YT.PlayerState.PLAYING) lift();
               },
               onStateChange: (e) => {
-                if (e.data === YT.PlayerState.PLAYING) scheduleLift(4000);
+                if (e.data === YT.PlayerState.PLAYING) lift();
               },
             },
           });
         };
 
-        setTimeout(lift, 9000);
+        // Safety net: lift anyway after 6s if the API never fires PLAYING.
+        setTimeout(lift, 6000);
       })();
     </script>
   </body>
