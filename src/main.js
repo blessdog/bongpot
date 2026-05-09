@@ -54,30 +54,4 @@ for (let i = 0; i < numOrbs; i++) {
   createOrb();
 }
 
-// Add a few stationary/slow background blobs to create the illusion of depth (shallow depth of field)
-for (let i = 0; i < 5; i++) {
-  const depthOrb = document.createElement('div');
-  depthOrb.classList.add('orb');
-  const size = Math.random() * 500 + 300;
-  depthOrb.style.width = `${size}px`;
-  depthOrb.style.height = `${size}px`;
-  depthOrb.style.left = `${Math.random() * 100}vw`;
-  depthOrb.style.top = `${Math.random() * 100}vh`;
-  depthOrb.style.opacity = '0.4'; // Out of focus / in the background
-  depthOrb.style.filter = 'blur(15px)'; // Shallow depth of field effect
-  
-  depthOrb.animate(
-    [
-      { transform: `translate(0, 0)` },
-      { transform: `translate(${Math.random() * 10 - 5}vw, ${Math.random() * 20 - 10}vh)` }
-    ], 
-    {
-      duration: 80000,
-      iterations: Infinity,
-      direction: 'alternate',
-      easing: 'ease-in-out'
-    }
-  );
-  
-  lavaLamp.appendChild(depthOrb);
-}
+// Removed depth orbs to prevent SVG filter alpha explosion.

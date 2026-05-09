@@ -59,8 +59,8 @@ body, html {
   border-radius: 50%;
   /* Deep crimson / magenta wax */
   background: radial-gradient(circle at 30% 30%, #ff4b1f, #ff003c 60%, #800020 100%);
-  /* Soft outer glow mimicking backlit subsurface scattering */
-  box-shadow: 0 0 40px rgba(255, 0, 60, 0.4), inset -20px -20px 60px rgba(128, 0, 32, 0.8), inset 20px 20px 60px rgba(255, 100, 50, 0.6);
+  /* Soft outer glow mimicking backlit subsurface scattering - REMOVED EXTERNAL GLOW to fix gooey bug */
+  box-shadow: inset -20px -20px 60px rgba(128, 0, 32, 0.8), inset 20px 20px 60px rgba(255, 100, 50, 0.6);
   mix-blend-mode: screen;
   will-change: transform;
 }
