@@ -71,8 +71,9 @@ body, html {
   animation: curtain-fade 3s linear forwards;
 }
 @keyframes curtain-fade {
-  0%, 20% { opacity: 1; }   /* brief hold so OS overlay stays masked  */
-  100%    { opacity: 0; }   /* then linear reveal of the live video   */
+  0%, 50% { opacity: 1; }   /* solid 1.5s hold so OS media-session overlay
+                                stays fully masked while it auto-hides  */
+  100%    { opacity: 0; }   /* then 1.5s linear reveal of the live video */
 }
 
 .lamp-greeting {
