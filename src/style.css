@@ -11,45 +11,16 @@ body, html {
   position: fixed;
   inset: 0;
   overflow: hidden;
-  background: #000;
+  background: #1a0d47;
   z-index: 1;
-  filter: url(#splittone);
 }
 
 /*
-  Touch-device path: skip the YouTube iframe entirely and show the
-  fallback <video> with the lavender/orange grade baked in. Avoids
-  iOS Safari's stack of issues (autoplay block, media-session overlay,
-  cross-origin filter producing a yellow rectangle). Filter is disabled
-  too — the fallback already has the grade encoded.
+  Cover behavior: video sized to the larger of (viewport-fitting) vs
+  (16:9-aspect-correct) in each dimension. Always at least viewport-sized,
+  always 16:9, centered. Overflow cropped by .lamp-stage.
 */
-@media (hover: none) and (pointer: coarse) {
-  .lamp-stage {
-    filter: none;
-  }
-  /*
-    !important: Vite's CSS minifier reorders rules and the bare
-    .lamp-fallback { display: none } default rule was ending up *after*
-    this @media block in the bundled output. Same specificity, later
-    wins, so the fallback was hidden even on iOS. !important forces the
-    override regardless of source order.
-  */
-  .lamp-video {
-    display: none !important;
-  }
-  .lamp-fallback {
-    display: block !important;
-  }
-}
-
-/*
-  Cover behavior: the iframe is sized to the larger of (viewport-fitting)
-  vs (16:9-aspect-correct) in each dimension. Result is always at least
-  viewport-sized, always 16:9, centered. Overflow is cropped by the stage.
-  Works on any aspect ratio: portrait phone, square, ultrawide, etc.
-*/
-.lamp-video,
-.lamp-fallback {
+.lamp-bg {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -61,32 +32,30 @@ body, html {
   object-fit: cover;
 }
 
-/* Default: desktop uses the YouTube iframe. Hide the fallback video. */
-.lamp-fallback {
-  display: none;
-}
-
-.lamp-shield {
-  position: absolute;
-  inset: 0;
-  pointer-events: auto;
-  background: transparent;
-  z-index: 2;
+/*
+  Hide Safari/iOS HTML5-video controls overlay. When autoplay is blocked
+  (Low Power Mode, per-site "Never Auto-Play", etc.) Safari overlays a
+  large play button on top of the video. The watchdog JS calls play() on
+  the user's first interaction so the video starts the moment they touch
+  the page — these rules ensure they never see the button in the meantime.
+*/
+.lamp-bg::-webkit-media-controls,
+.lamp-bg::-webkit-media-controls-panel,
+.lamp-bg::-webkit-media-controls-overlay-play-button,
+.lamp-bg::-webkit-media-controls-start-playback-button {
+  display: none !important;
+  -webkit-appearance: none !important;
 }
 
 /*
-  Curtain covers the iframe while the YouTube player loads + buffers.
-  Color is the deep purple end of the split-tone LUT so the page looks
-  like the lamp's dark background during load — not a black void.
-  A "we love you" greeting fades in/out with the curtain so the load
-  state has presence rather than feeling dead.
+  Curtain covers the video while it loads + buffers. Color is the deep
+  purple end of the lamp's grade so the page looks like the lamp's dark
+  background during load — not a black void. The greeting (quote) fades
+  with the curtain so the load state has presence.
 
   Two paths can lift it:
-    1. JS adds .lift the moment YouTube reports PLAYING. The fade is
-       gradual (~3s with a brief opaque hold so the OS media-session
-       overlay still gets covered during its auto-hide window).
-    2. CSS animation fires at 6s as a fallback if JS is disabled or the
-       IFrame API never loads.
+    1. JS adds .lift the moment the video signals 'playing' or 'canplay'.
+    2. CSS animation fires at 4s as a fallback if JS is disabled.
 */
 .lamp-curtain {
   position: absolute;
@@ -98,18 +67,9 @@ body, html {
   display: flex;
   align-items: center;
   justify-content: center;
-  /*
-    JS-disabled fallback: 4s pre-delay (so a quote is readable on load)
-    + 6.5s animation = 10.5s total before reveal. CSS-only path.
-  */
   animation: curtain-fade 6.5s linear 4s forwards;
 }
 .lamp-curtain.lift {
-  /*
-    JS path triggered by the IFrame API on PLAYING. 5s solid hold so the
-    quote can actually be read AND the OS media-session overlay is fully
-    auto-hidden before any opacity drops. Then 1.5s linear fade.
-  */
   animation: curtain-fade 6.5s linear forwards;
 }
 @keyframes curtain-fade {
@@ -152,8 +112,7 @@ body, html {
   Warm ambient glow bleeding from the bottom. Linear bottom→transparent
   gradient instead of a radial because radial gradients terminate at a
   ring of constant alpha — that ring read as a perceptible horizontal
-  seam mid-viewport. Linear gradient has continuous alpha falloff with
-  no discrete edge.
+  seam mid-viewport.
 */
 .tungsten-glow {
   position: fixed;

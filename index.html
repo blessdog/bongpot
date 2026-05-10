@@ -6,10 +6,6 @@
     <title>bongpot.com — I love lamp</title>
     <meta name="description" content="A psychedelic lava lamp for your screen. Press play and chill." />
 
-    <!--
-      Favicons. SVG first so modern browsers render it crisp at any zoom
-      level. PNGs are pre-rasterized fallbacks for older browsers.
-    -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
     <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96.png" />
@@ -19,11 +15,6 @@
 
     <link rel="stylesheet" href="/src/style.css" />
 
-    <!--
-      Link-share preview cards (iMessage, Discord, Slack, WhatsApp, Twitter,
-      Facebook, etc.). og:image points at an animated GIF so the lamp moves
-      in the preview. og:video gives clients that prefer it a tiny MP4.
-    -->
     <meta property="og:title" content="bongpot.com — I love lamp" />
     <meta property="og:description" content="A psychedelic lava lamp for your screen. Press play and chill." />
     <meta property="og:url" content="https://bongpot.com" />
@@ -44,73 +35,23 @@
     <meta name="twitter:description" content="A psychedelic lava lamp for your screen. Press play and chill." />
     <meta name="twitter:image" content="https://bongpot.com/preview.gif" />
     <meta name="twitter:image:alt" content="A lavender and orange lava lamp slowly drifting" />
-
-    <!--
-      Load-time optimization. Warms TLS to YouTube hosts before the iframe
-      mounts so the player + first video chunks arrive faster.
-      NOTE: when you change the video ID, update it in TWO places below:
-        1. the iframe src (twice — embed/ID and playlist=ID)
-    -->
-    <link rel="preconnect" href="https://www.youtube-nocookie.com" crossorigin />
-    <link rel="preconnect" href="https://www.youtube.com" crossorigin />
-    <link rel="dns-prefetch" href="https://i.ytimg.com" />
-    <link rel="dns-prefetch" href="https://yt3.ggpht.com" />
   </head>
   <body>
-    <!--
-      Split-tone color filter. Per-channel lookup tables map grayscale
-      luminance to a lavender (shadows) → orange (highlights) gradient.
-      Tune the tableValues to reshape the color curve. Only color transforms
-      here — no blur — so it stays GPU-stable.
-    -->
-    <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
-      <filter id="splittone" color-interpolation-filters="sRGB">
-        <feColorMatrix type="saturate" values="0"/>
-        <feComponentTransfer>
-          <feFuncR type="table" tableValues="0.10 0.40 0.74 0.96 1.00"/>
-          <feFuncG type="table" tableValues="0.05 0.22 0.45 0.60 0.72"/>
-          <feFuncB type="table" tableValues="0.28 0.45 0.30 0.14 0.04"/>
-        </feComponentTransfer>
-      </filter>
-    </svg>
     <div class="lamp-stage">
-      <iframe
-        id="lamp-video"
-        class="lamp-video"
-        src="https://www.youtube-nocookie.com/embed/lPInO0xV8x4?autoplay=1&mute=1&controls=0&loop=1&playlist=lPInO0xV8x4&modestbranding=1&playsinline=1&rel=0&iv_load_policy=3&disablekb=1&vq=hd1080&hd=1&enablejsapi=1"
-        title="Lava lamp"
-        frameborder="0"
-        allow="autoplay; encrypted-media"
-        loading="eager"
-      ></iframe>
-
-      <!--
-        Mobile fallback. The YouTube iframe path on iOS Safari has a stack
-        of fragile issues (autoplay block, OS media-session overlay flash,
-        cross-origin filter producing a yellow screen). For a touch device
-        we skip the iframe entirely and play the same color-graded
-        boomerang clip we use for the link-share preview, as a native
-        <video>. Reliable autoplay, baked-in lavender/orange grade, no
-        YouTube chrome to hide, no third-party iframe quirks.
-      -->
       <video
-        id="lamp-fallback"
-        class="lamp-fallback"
-        src="/lamp-mobile.mp4"
+        id="lamp-bg"
+        class="lamp-bg"
         autoplay
         muted
         loop
         playsinline
         preload="auto"
         aria-hidden="true"
+        disablepictureinpicture
+        disableremoteplayback
+        x-webkit-airplay="deny"
       ></video>
-      <!-- Shield blocks pointer events so visitors can't pause/open the YouTube UI. -->
-      <div class="lamp-shield"></div>
-      <!--
-        Curtain hides the YT/OS media-session overlay during the first
-        seconds of autoplay. Default quote shown if JS is disabled; the
-        script below replaces it with a random pick on page load.
-      -->
+
       <div class="lamp-curtain">
         <div class="lamp-greeting">
           <p class="lamp-greeting-primary">&ldquo;What matters most is how well you walk through the fire.&rdquo;</p>
@@ -121,18 +62,8 @@
 
     <div class="tungsten-glow"></div>
 
-    <!--
-      Lift the curtain exactly when YouTube reports the video is playing
-      instead of waiting on a fixed timer. Two safety nets layered:
-        1. JS setTimeout(8000) — fires if the IFrame API itself fails to load
-        2. CSS animation in style.css — fires if JS is disabled entirely
-      Either fallback hands you a working page; the API path just makes the
-      reveal snappier on most loads.
-    -->
     <script>
       (() => {
-        // Curated quote pool. Edit/add freely — items are [quote, author].
-        // Aim for thought-provoking and weighty, not motivational filler.
         const QUOTES = [
           ["What matters most is how well you walk through the fire.", "Charles Bukowski"],
           ["Find what you love and let it kill you.", "Charles Bukowski"],
@@ -168,46 +99,39 @@
         if (primary) primary.textContent = '“' + quoteText + '”';
         if (secondary) secondary.textContent = '— ' + author;
 
-        // YT IFrame API: lift on PLAYING, force play for Safari.
-        const tag = document.createElement('script');
-        tag.src = 'https://www.youtube.com/iframe_api';
-        document.head.appendChild(tag);
+        // Pick the right video file for the device. Mobile gets a much
+        // lighter cellular-friendly version; desktop gets the full 10-min
+        // boomerang with the lavender/orange grade baked in.
+        const video = document.getElementById('lamp-bg');
+        const isMobile = matchMedia('(hover: none) and (pointer: coarse)').matches;
+        video.src = isMobile ? '/lamp-mobile.mp4' : '/lamp-bg.mp4';
 
-        let lifted = false;
+        // Lift the curtain when the video signals it's playing.
         const lift = () => {
-          if (lifted) return;
-          lifted = true;
           const c = document.querySelector('.lamp-curtain');
           if (c) c.classList.add('lift');
         };
-
-        window.onYouTubeIframeAPIReady = () => {
-          new YT.Player('lamp-video', {
-            events: {
-              onReady: (e) => {
-                // Safari often blocks the autoplay= URL hint but allows
-                // programmatic play after explicit mute. Try it.
-                try { e.target.mute(); e.target.playVideo(); } catch (_) {}
-                if (e.target.getPlayerState() === YT.PlayerState.PLAYING) lift();
-              },
-              onStateChange: (e) => {
-                if (e.data === YT.PlayerState.PLAYING) lift();
-              },
-            },
-          });
-        };
-
-        // On touch devices the fallback <video> plays instead of the iframe.
-        // Lift the curtain when the fallback signals it's playing.
-        const fallback = document.getElementById('lamp-fallback');
-        if (fallback) {
-          fallback.addEventListener('playing', lift, { once: true });
-          fallback.addEventListener('canplay', lift, { once: true });
-        }
-
-        // Safety net: if neither path fires (broken JS, network blocking,
-        // Safari refusing autoplay), still trigger the lift.
+        video.addEventListener('playing', lift, { once: true });
+        video.addEventListener('canplay', lift, { once: true });
+        // Safety net for completely-broken-JS / network blocks.
         setTimeout(lift, 4000);
+
+        // Watchdog: any time the video pauses, stalls, or the tab refocuses,
+        // try to play it again. Also try on the first user interaction so
+        // browsers that hard-blocked autoplay (Safari Low Power, per-site
+        // "Never Auto-Play") still hand us a play() the moment the user
+        // touches the page.
+        const tryPlay = () => video.play().catch(() => {});
+        tryPlay();
+        ['click', 'touchstart', 'scroll', 'keydown', 'pointerdown'].forEach((evt) => {
+          document.addEventListener(evt, tryPlay, { passive: true });
+        });
+        video.addEventListener('pause', tryPlay);
+        video.addEventListener('stalled', tryPlay);
+        video.addEventListener('waiting', tryPlay);
+        document.addEventListener('visibilitychange', () => {
+          if (!document.hidden) tryPlay();
+        });
       })();
     </script>
   </body>
